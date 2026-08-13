@@ -1,0 +1,71 @@
+name: Pruebas automáticas (Classroom)
+on:
+  push:
+  workflow_dispatch:
+  repository_dispatch:
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Vincular CSS y JS al HTML
+        id: test-link-css-js
+        uses: classroom-resources/autograding-io-grader@v1
+        with:
+          test-name: 'Vinculación de css/styles.css y js/index.js en index.html'
+          command: 'bash scripts/classroom-check.sh link-css-js'
+          expected-output: 'CORRECTO'
+          comparison-method: exact
+          timeout: 10
+          max-score: 25
+
+      - name: Realizar petición a la API con fetch
+        id: test-fetch-api
+        uses: classroom-resources/autograding-io-grader@v1
+        with:
+          test-name: 'Uso de fetch() o async/await para consultar la API'
+          command: 'bash scripts/classroom-check.sh fetch-api'
+          expected-output: 'CORRECTO'
+          comparison-method: exact
+          timeout: 10
+          max-score: 25
+
+      - name: Renderizar datos del usuario en el DOM
+        id: test-render-user
+        uses: classroom-resources/autograding-io-grader@v1
+        with:
+          test-name: 'Renderizado de foto, nombre completo e email en la tarjeta'
+          command: 'bash scripts/classroom-check.sh render-user'
+          expected-output: 'CORRECTO'
+          comparison-method: exact
+          timeout: 10
+          max-score: 25
+
+      - name: Implementar botón Pedir random
+        id: test-button-random
+        uses: classroom-resources/autograding-io-grader@v1
+        with:
+          test-name: 'Botón #random descomentado y función/evento de recarga implementado'
+          command: 'bash scripts/classroom-check.sh button-random'
+          expected-output: 'CORRECTO'
+          comparison-method: exact
+          timeout: 10
+          max-score: 25
+
+      - name: Informe de resultados para Classroom
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          TEST-LINK-CSS-JS_RESULTS: '${{ steps.test-link-css-js.outputs.result }}'
+          TEST-FETCH-API_RESULTS: '${{ steps.test-fetch-api.outputs.result }}'
+          TEST-RENDER-USER_RESULTS: '${{ steps.test-render-user.outputs.result }}'
+          TEST-BUTTON-RANDOM_RESULTS: '${{ steps.test-button-random.outputs.result }}'
+        with:
+          runners: test-link-css-js,test-fetch-api,test-render-user,test-button-random
