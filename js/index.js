@@ -31,7 +31,19 @@ async function obtenerUsuario() {
 }
 
 function renderizarDatosUsuario(datos) {
-  // Escribe aquí tu código para mostrar la foto, nombre completo e email en div.tarjeta
+  // 1. Obtenemos el usuario desde la propiedad results del objeto que devuelve la API
+  const usuario = datos.results[0];
+
+  // 2. Seleccionamos el contenedor HTML donde vamos a insertar los datos
+  const tarjeta = document.querySelector('.tarjeta');
+
+  // 3. Insertamos el HTML usando template strings (las comillas invertidas ``)
+  // Utilizamos las propiedades exactas que nos pide la consigna
+  tarjeta.innerHTML = `
+    <img src="${usuario.picture.large}" alt="Foto de perfil de ${usuario.name.first}">
+    <h2>${usuario.name.title} ${usuario.name.first} ${usuario.name.last}</h2>
+    <p>${usuario.email}</p>
+  `;
 }
 
 /* -------------------------------- CONSIGNA 2 -------------------------------- */
