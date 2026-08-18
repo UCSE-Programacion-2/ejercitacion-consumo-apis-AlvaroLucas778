@@ -18,6 +18,18 @@
 //    Estos elementos ya tienen estilos definidos en css/styles.css
 //    (.tarjeta img, .tarjeta h2, .tarjeta p).
 
+const API_URL = 'http://localhost:3000/api/user';
+
+async function obtenerUsuario() {
+  try {
+    const response = await fetch(API_URL);
+    const datos = await response.json();
+    renderizarDatosUsuario(datos);
+  } catch (error) {
+    console.error('Error al obtener los datos:', error);
+  }
+}
+
 function renderizarDatosUsuario(datos) {
   // Escribe aquí tu código para mostrar la foto, nombre completo e email en div.tarjeta
 }
