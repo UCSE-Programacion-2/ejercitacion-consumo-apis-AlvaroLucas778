@@ -1,25 +1,18 @@
-// Archivo principal de JavaScript para la ejercitación de Consumo de APIs
-
-/* -------------------------------- CONSIGNA 1 -------------------------------- */
-// 1. Realizar una petición a la API de usuarios utilizando fetch().
-//    URL: http://localhost:3000/api/user  (iniciar antes con npm start)
-// 2. Al recibir la respuesta, convertirla a JSON con response.json().
-// 3. Invocar renderizarDatosUsuario() pasándole el objeto JSON completo.
-
-// 4. Desarrollar renderizarDatosUsuario(datos):
-//    - Obtener el usuario desde datos.results[0].
-//    - Seleccionar el contenedor con document.querySelector('.tarjeta').
-//    - Insertar dentro de .tarjeta (con innerHTML o createElement) estos elementos:
-//
-//        <img>   → src = picture.large   (la foto circular del usuario)
-//        <h2>    → title + first + last  (nombre completo, ej: "Mr John Doe")
-//        <p>     → email                 (correo electrónico)
-//
-//    Estos elementos ya tienen estilos definidos en css/styles.css
-//    (.tarjeta img, .tarjeta h2, .tarjeta p).
-
 const API_URL = 'http://localhost:3000/api/user';
 
+// 1. Movemos renderizarDatosUsuario arriba para que ESLint la lea antes de que se use
+function renderizarDatosUsuario(datos) {
+  const usuario = datos.results[0];
+  const tarjeta = document.querySelector('.tarjeta');
+
+  tarjeta.innerHTML = `
+    <img src="${usuario.picture.large}" alt="Foto de perfil de ${usuario.name.first}">
+    <h2>${usuario.name.title} ${usuario.name.first} ${usuario.name.last}</h2>
+    <p>${usuario.email}</p>
+  `;
+}
+
+// 2. Declaramos obtenerUsuario (ahora ya conoce a renderizarDatosUsuario)
 async function obtenerUsuario() {
   try {
     const response = await fetch(API_URL);
@@ -30,28 +23,12 @@ async function obtenerUsuario() {
   }
 }
 
-function renderizarDatosUsuario(datos) {
-  // 1. Obtenemos el usuario desde la propiedad results del objeto que devuelve la API
-  const usuario = datos.results[0];
+// 3. Llamamos a la función para cargar el primer usuario al abrir la página.
+// Esto soluciona el warning de "nunca se usó".
+obtenerUsuario();
 
-  // 2. Seleccionamos el contenedor HTML donde vamos a insertar los datos
-  const tarjeta = document.querySelector('.tarjeta');
-
-  // 3. Insertamos el HTML usando template strings (las comillas invertidas ``)
-  // Utilizamos las propiedades exactas que nos pide la consigna
-  tarjeta.innerHTML = `
-    <img src="${usuario.picture.large}" alt="Foto de perfil de ${usuario.name.first}">
-    <h2>${usuario.name.title} ${usuario.name.first} ${usuario.name.last}</h2>
-    <p>${usuario.email}</p>
-  `;
-}
-
-/* -------------------------------- CONSIGNA 2 -------------------------------- */
-// 1. Descomentar en index.html el contenedor .btnContainer con el botón #random.
-// 2. Desarrollar la función cargarUsuario() o escuchar el evento clic en el botón #random.
-// 3. Al hacer clic en el botón, se debe realizar un nuevo pedido a la API
-//    y actualizar la tarjeta sin recargar la página.
-
+// 4. Desactivamos la regla solo para la siguiente línea, ya que esta función se usa en el HTML
+// eslint-disable-next-line no-unused-vars
 function cargarUsuario() {
-  // Escribe aquí tu código para realizar un nuevo pedido a la API y actualizar la tarjeta
+  obtenerUsuario();
 }
